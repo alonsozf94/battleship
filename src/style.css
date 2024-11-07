@@ -1,0 +1,43 @@
+/* styles.css */
+body {
+  height: 100vh;
+  background-color: lightblue;
+}
+
+/* Player Screen */
+.player-ui {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.boards-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Create Player Pop-Up */
+
+/* Board */
+.board {
+  border: 1px solid black;
+}
+.board-row {
+  display: flex;
+  flex-direction: row;
+}
+
+/* Coordinates */
+.coordinate {
+  width: 30px;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid black;
+  cursor: pointer;
+}
+.coordinate:hover {
+  background-color: rgba(0,0,0,0.5);
+}

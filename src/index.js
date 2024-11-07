@@ -1,0 +1,44 @@
+import { Battleship } from "./battleship.js";
+import { Player } from "./player";
+import { DIRECTIONS, SHIPS } from "./constants.js";
+import { Game } from "./game.js";
+import style from './style.css'
+
+// const player = new Player('Yudai');
+// const enemy = new Player('Alonso');
+
+// player.opponent = enemy;
+// enemy.opponent = player;
+
+// const cruiser1 = new Battleship(SHIPS.CRUISER, { x: 0, y: 0 }, DIRECTIONS.HORIZONTAL);
+// const cruiser2 = new Battleship(SHIPS.CRUISER, { x: 2, y: 5 }, DIRECTIONS.HORIZONTAL);
+
+// player.addBattleship(cruiser1)
+// enemy.addBattleship(cruiser2)
+
+function render() {
+
+  let currentGame = Game();
+  currentGame.renderGameScreen();
+
+  // UI
+  // let playerScreen = playerUI(document.querySelector('body'), player);
+  // playerScreen.renderUI();
+
+  // Testing
+  // enemy.showGame();
+  // player.attack(0,0);
+  // player.attack(0,0);
+  // player.attack(0,1);
+  // enemy.showGame();
+  // enemy.checkStatus();
+  // player.attack(0,2);
+  // enemy.showGame();
+  // enemy.checkStatus();
+}
+
+render()
+
+
+
+
