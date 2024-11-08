@@ -22,21 +22,27 @@ class Gameboard {
   }
 
   placeBattleship(ship) {
-    let startX = ship.startPos.x;
-    let startY = ship.startPos.y;
-    if (startX + ship.length > 9 || startY + ship.length > 9) {
-      console.log("Out of bounds!");
-      return false;
-    }
+    let startX = parseInt(ship.startPos.x);
+    let startY = parseInt(ship.startPos.y);
+    // if (startX + ship.length > 9 || startY + ship.length > 9) {
+    //   console.log("Out of bounds!");
+    //   return false;
+    // }
     for (let i = 0; i < ship.length; i++) {
       if (ship.direction == DIRECTIONS.HORIZONTAL) {
-        if (this.verifyIfFree(startX, startY + i, ship.length - i, ship.direction, ship.name))
+        if (startY + ship.length > 9) {
+          console.log("Out of bounds!");
+          return false;
+        } else if (this.verifyIfFree(startX, startY + i, ship.length - i, ship.direction, ship.name))
           this._board[startX][startY + i].mark = MARKS.SHIP;
         else {
           return false
         }
       } else if (ship.direction == DIRECTIONS.VERTICAL) {
-        if (this.verifyIfFree(startX + i, startY, ship.length - i, ship.direction, ship.name))
+        if (startX + ship.length > 9) {
+          console.log(`Out of bounds! ${startX + ship.length}`);
+          return false;
+        } else if (this.verifyIfFree(startX + i, startY, ship.length - i, ship.direction, ship.name))
           this._board[startX + i][startY].mark = MARKS.SHIP;
         else {
           return false

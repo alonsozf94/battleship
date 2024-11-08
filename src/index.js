@@ -24,17 +24,6 @@ function render() {
   // UI
   // let playerScreen = playerUI(document.querySelector('body'), player);
   // playerScreen.renderUI();
-
-  // Testing
-  // enemy.showGame();
-  // player.attack(0,0);
-  // player.attack(0,0);
-  // player.attack(0,1);
-  // enemy.showGame();
-  // enemy.checkStatus();
-  // player.attack(0,2);
-  // enemy.showGame();
-  // enemy.checkStatus();
 }
 
 render()

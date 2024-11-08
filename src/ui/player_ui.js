@@ -74,6 +74,8 @@ function playerUI(screen, player) {
       return opponentUIBoard;
     },
     renderUI() {
+      // screen.innerHTML = '';
+      
       let playerUI = document.createElement("div");
       let boardsContainer = document.createElement("div");
       let playerShips = this.renderShips();

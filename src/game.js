@@ -5,29 +5,49 @@ import { SHIPS, DIRECTIONS } from "./constants";
 
 function Game() {
   // Creates player and sets up properties
-  let player1 =  new Player("Blue");
-  let player2 =  new Player("Red");
+  let player1 = new Player("Blue");
+  let player2 = new Player("Red");
   player1.opponent = player2;
   player2.opponent = player1;
   let player1UI = playerUI(document.querySelector("body"), player1);
   let player2UI = playerUI(document.querySelector("body"), player2);
   return {
-    positionShips() { // Adds ships to players
+    // Somehow make the UI get the board object with queryselector,
+    // because doing it from here just gets the first instance of the rendered board
+    positionShips() {
+      // Adds ships to players
       // Sets up UI first
-      player1UI.renderUI()      
+      player1UI.renderUI();
       let player1UIBoard = document.querySelector(".player-board");
-      let coordinateList = player1UIBoard.querySelectorAll('.coordinate')     
-      coordinateList.forEach(coord => {
-        coord.addEventListener('click', () => {      
-          console.log(`X: ${coord.dataset.x} Y: ${coord.dataset.y}`);
-        })
-      })
+      let coordinateList = player1UIBoard.querySelectorAll(".coordinate");
+
+      // Clicking on a free space
+      coordinateList.forEach((coord) => {
+        coord.addEventListener("click", () => {
+          console.log("aaaa");
+
+          if (player1.ships.length <= 5) {
+            let shipToAdd = Object.values(SHIPS)[player1.ships.length];
+            let newShip = new Battleship(
+              shipToAdd,
+              { x: coord.dataset.x, y: coord.dataset.y },
+              DIRECTIONS.VERTICAL
+            );
+            player1.addBattleship(newShip);
+            console.log(
+              `Occupies: ${
+                parseInt(newShip.startPos.x) + parseInt(newShip.length)
+              }`
+            );
+            player1UI.renderUI();
+            console.log(`Ships: ${player1.ships.length}`);
+          } else console.log("can't place no more");
+        });
+      });
     },
     renderGameScreen() {
-      this.positionShips()
-      // const cruiser1 = new Battleship(SHIPS.CARRIER, { x: 2, y: 2 }, DIRECTIONS.VERTICAL);
-      // player1.addBattleship(cruiser1);
-    }
+      this.positionShips();
+    },
   };
 }
 
