@@ -3,50 +3,46 @@ import { Player } from "./player";
 import { Battleship } from "./battleship";
 import { SHIPS, DIRECTIONS } from "./constants";
 
-function Game() {
+function Game(player1, player2, container) {
   // Creates player and sets up properties
-  let player1 = new Player("Blue");
-  let player2 = new Player("Red");
-  player1.opponent = player2;
-  player2.opponent = player1;
-  let player1UI = playerUI(document.querySelector("body"), player1);
-  let player2UI = playerUI(document.querySelector("body"), player2);
+  let playerScreen = playerUI(container, player1);
   return {
-    // Somehow make the UI get the board object with queryselector,
-    // because doing it from here just gets the first instance of the rendered board
-    positionShips() {
+    initializePlayers() {
+    player1.opponent = player2;
+    player2.opponent = player1;
+    },
+    positionShips(player) {
       // Adds ships to players
       // Sets up UI first
-      player1UI.renderUI();
-      let player1UIBoard = document.querySelector(".player-board");
-      let coordinateList = player1UIBoard.querySelectorAll(".coordinate");
-
-      // Clicking on a free space
+      let playerScreen = playerUI(container, player1);
+      playerScreen.renderUI();
+      this.attachCoordinateListeners(player, playerScreen);
+    },
+    attachCoordinateListeners(player, playerScreen) {
+      let board = container.querySelector('.player-board');
+      let coordinateList = board.querySelectorAll(".coordinate");
+      // console.log(coordinateList);
       coordinateList.forEach((coord) => {
         coord.addEventListener("click", () => {
-          console.log("aaaa");
-
-          if (player1.ships.length <= 5) {
+          if (player.ships.length <= 4) {
+            console.log("LENGTH");
+            console.log(player.ships.length);
+            
             let shipToAdd = Object.values(SHIPS)[player1.ships.length];
             let newShip = new Battleship(
               shipToAdd,
               { x: coord.dataset.x, y: coord.dataset.y },
               DIRECTIONS.VERTICAL
             );
-            player1.addBattleship(newShip);
-            console.log(
-              `Occupies: ${
-                parseInt(newShip.startPos.x) + parseInt(newShip.length)
-              }`
-            );
-            player1UI.renderUI();
-            console.log(`Ships: ${player1.ships.length}`);
-          } else console.log("can't place no more");
+            player.addBattleship(newShip);
+            playerScreen.renderUI();
+            this.attachCoordinateListeners(player, playerScreen);
+          } else console.log("All ships have been placed");
         });
       });
     },
-    renderGameScreen() {
-      this.positionShips();
+    playTurn(player) {
+      this.positionShips(player, container);
     },
   };
 }

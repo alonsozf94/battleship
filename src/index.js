@@ -18,8 +18,12 @@ import style from './style.css'
 
 function render() {
 
-  let currentGame = Game();
-  currentGame.renderGameScreen();
+  const playerYudai = new Player('Yudai');
+  const playerAlonso = new Player('Alonso');
+
+  let currentGame = Game(playerYudai, playerAlonso, document.querySelector('body'));
+  currentGame.initializePlayers();
+  currentGame.playTurn(playerYudai);
 
   // UI
   // let playerScreen = playerUI(document.querySelector('body'), player);
