@@ -19,9 +19,23 @@ const SHIPS = (() => {
     CARRIER: {name: 'Carrier', length: 5},
     BATTLESHIP: {name: 'Battleship', length: 4},
     CRUISER: {name: 'Cruiser', length: 3},
-    SUBMARINE: {name: 'Submarine', length: 2},
-    DESTROYER: {name: 'Destroyer', length: 1},
+    SUBMARINE: {name: 'Submarine', length: 3},
+    DESTROYER: {name: 'Destroyer', length: 2},
   }
 })();
 
-export {MARKS, DIRECTIONS, SHIPS}
+const PLAYERS = (() => {
+  return {
+    PLAYER: 'Player',
+    OPPONENT: 'Opponnent'
+  }
+})();
+
+const GAMEMODES = (() => {
+  return {
+    HUMAN: 'Human',
+    COMPUTER: 'Computer'
+  }
+})();
+
+export {MARKS, DIRECTIONS, SHIPS, PLAYERS, GAMEMODES}

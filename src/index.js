@@ -1,37 +1,42 @@
-import { Battleship } from "./battleship.js";
 import { Player } from "./player";
-import { DIRECTIONS, SHIPS } from "./constants.js";
 import { Game } from "./game.js";
-import style from './style.css'
-
-// const player = new Player('Yudai');
-// const enemy = new Player('Alonso');
-
-// player.opponent = enemy;
-// enemy.opponent = player;
-
-// const cruiser1 = new Battleship(SHIPS.CRUISER, { x: 0, y: 0 }, DIRECTIONS.HORIZONTAL);
-// const cruiser2 = new Battleship(SHIPS.CRUISER, { x: 2, y: 5 }, DIRECTIONS.HORIZONTAL);
-
-// player.addBattleship(cruiser1)
-// enemy.addBattleship(cruiser2)
+import style from "./style.css";
+import { playerUI } from "./ui/player_ui.js";
+import { Computer } from "./computer.js";
+import { GAMEMODES } from "./constants.js";
 
 function render() {
+  const playerYudai = new Player("Yudai");
+  // const playerAlonso = new Player('Alonso');
+  const computerPlayer = new Computer("XLR8");
+  // let playerYudaiScreen = playerUI(document.querySelector('body'),playerYudai);
 
-  const playerYudai = new Player('Yudai');
-  const playerAlonso = new Player('Alonso');
+  // playerYudai.opponent = computerPlayer;
+  // computerPlayer.opponent = playerYudai;
 
-  let currentGame = Game(playerYudai, playerAlonso, document.querySelector('body'));
+  // computerPlayer.autoAttack();
+  // computerPlayer.autoAttack();
+  // computerPlayer.autoAttack();
+
+  let currentGame = Game(
+    playerYudai,
+    computerPlayer,
+    document.querySelector("body"),
+    GAMEMODES.COMPUTER
+  );
   currentGame.initializePlayers();
-  currentGame.playTurn(playerYudai);
+  currentGame.setupPhase(GAMEMODES.COMPUTER).then(() => {
+    console.log("Both players have positioned their ships. Starting the game!");
 
-  // UI
-  // let playerScreen = playerUI(document.querySelector('body'), player);
-  // playerScreen.renderUI();
+    // Make this in the game factory function
+    // playerYudai.attack(0,0);
+    // playerYudaiScreen.renderUI();
+
+    // Next step is to do the attacks
+    currentGame.attackPhase().then(() => {
+      console.log(`Woohoo!`);
+    });
+  });
 }
 
-render()
-
-
-
-
+render();

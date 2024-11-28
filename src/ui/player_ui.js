@@ -1,20 +1,25 @@
-import { MARKS } from "../constants";
+import { MARKS, PLAYERS } from "../constants";
 
 function playerUI(screen, player) {
   // Maybe turn this into a class
   return {
-    cellEmoji(mark) {
-      switch (mark) {
-        case MARKS.FREE:
-          return "🌊";
-        case MARKS.MARKED:
-          return "❌";
-        case MARKS.SHIP:
-          return "⛵";
-        case MARKS.HIT:
-          return "💥";
-        default:
-          break;
+    cellEmoji(mark, player = PLAYERS.PLAYER) {
+      if (player === PLAYERS.PLAYER) {
+        switch (mark) {
+          case MARKS.FREE:
+            return "🌊";
+          case MARKS.MARKED:
+            return "❌";
+          case MARKS.SHIP:
+            return "⛵";
+          case MARKS.HIT:
+            return "💀";
+          default:
+            break;
+        }
+      } else if (player === PLAYERS.OPPONENT) {
+        if (mark == MARKS.HIT) return "💥"
+        else return "🌊"
       }
     },
     renderShips() {
@@ -26,8 +31,8 @@ function playerUI(screen, player) {
       let playerUIBoard = document.createElement("div");
       let playerGrid = player.board.board;
 
-      playerUIBoard.classList.add('board');
-      playerUIBoard.classList.add('player-board');
+      playerUIBoard.classList.add("board");
+      playerUIBoard.classList.add("player-board");
 
       // Creating grid
       playerGrid.forEach((row) => {
@@ -38,8 +43,8 @@ function playerUI(screen, player) {
           gridCoordinate.classList.add("coordinate");
           gridCoordinate.classList.add("player-coord");
           gridCoordinate.classList.add("opponent-coord");
-          gridCoordinate.setAttribute('data-x',`${coord.x}`);
-          gridCoordinate.setAttribute('data-y',`${coord.y}`);
+          gridCoordinate.setAttribute("data-x", `${coord.x}`);
+          gridCoordinate.setAttribute("data-y", `${coord.y}`);
           gridCoordinate.innerHTML = this.cellEmoji(coord.mark);
           gridRow.appendChild(gridCoordinate);
         });
@@ -53,8 +58,8 @@ function playerUI(screen, player) {
       let opponentUIBoard = document.createElement("div");
       let opponentGrid = player.opponent.board.board;
 
-      opponentUIBoard.classList.add('board');
-      opponentUIBoard.classList.add('opponent-board');
+      opponentUIBoard.classList.add("board");
+      opponentUIBoard.classList.add("opponent-board");
 
       // Creating grid
       opponentGrid.forEach((row) => {
@@ -63,9 +68,10 @@ function playerUI(screen, player) {
         row.forEach((coord) => {
           let gridCoordinate = document.createElement("div");
           gridCoordinate.classList.add("coordinate");
-          gridCoordinate.setAttribute('data-x',`${coord.x}`);
-          gridCoordinate.setAttribute('data-y',`${coord.y}`);
-          gridCoordinate.innerHTML = this.cellEmoji(coord.mark);
+          gridCoordinate.setAttribute("data-x", `${coord.x}`);
+          gridCoordinate.setAttribute("data-y", `${coord.y}`);
+
+          gridCoordinate.innerHTML = this.cellEmoji(coord.mark/*, PLAYERS.OPPONENT*/);
           gridRow.appendChild(gridCoordinate);
         });
         opponentUIBoard.appendChild(gridRow);
@@ -74,21 +80,21 @@ function playerUI(screen, player) {
       return opponentUIBoard;
     },
     renderUI() {
-      screen.innerHTML = '';
-      
+      screen.innerHTML = "";
+
       let playerUI = document.createElement("div");
       let boardsContainer = document.createElement("div");
       let playerShips = this.renderShips();
       let playerBoard = this.renderPlayerBoard();
       let oppBoard = this.renderOpponentBoard();
 
-      playerUI.classList.add('player-ui');
-      boardsContainer.classList.add('boards-container');
+      playerUI.classList.add("player-ui");
+      boardsContainer.classList.add("boards-container");
 
       playerUI.appendChild(playerShips);
       boardsContainer.appendChild(playerBoard);
       boardsContainer.appendChild(oppBoard);
-      playerUI.appendChild(boardsContainer)
+      playerUI.appendChild(boardsContainer);
       screen.appendChild(playerUI);
     },
   };

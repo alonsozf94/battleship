@@ -6,11 +6,12 @@ class Player {
     this._name = name;
     console.log(`Setting ${name}'s board...`);
     this._board = new Gameboard();
-    if (shipArray != null) {
-      this._ships = shipArray.forEach((ship) => {
-        this.addBattleship(ship);
-      });
-    } else this._ships = [];
+    // if (shipArray != null) {
+    //   this._ships = shipArray.forEach((ship) => {
+    //     this.addBattleship(ship);
+    //   });
+    // } else
+    this._ships = [];
     this._isDefeated = false;
     this._opponent = undefined;
   }
@@ -54,7 +55,6 @@ class Player {
       return false;
     }
   }
-
   attack(x, y) {
     console.log(`====================================================`);
     console.log(
@@ -63,18 +63,19 @@ class Player {
     if (this.opponent.board.receiveHit(x, y) != false) {
       this.opponent.ships.forEach((ship) => {
         ship.getHit(x, y);
+        this.checkStatus();
       });
-    }
+      return true;
+    } else return false;
   }
-
   checkStatus() {
     if (this.ships.every((ship) => ship.isSunk == true)) {
       console.log(`${this.name} lost`);
+      this.isDefeated = true;
     } else {
       console.log(`${this.name} is on the game`);
     }
   }
-
   showGame() {
     console.log(`====================================================`);
     console.log(`Player ${this.name}`);
