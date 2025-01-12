@@ -20,7 +20,7 @@ function playerUI(screen, player) {
       } else if (player === PLAYERS.OPPONENT) {
         if (mark == MARKS.HIT) return "💥";
         if (mark == MARKS.MARKED) return "❌";
-        if (mark == MARKS.SHIP) return "⛵";
+        // if (mark == MARKS.SHIP) return "⛵";
         else return "🌊"
       }
     },
