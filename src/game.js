@@ -16,8 +16,6 @@ function Game(player1, player2, container, gamemode) {
       return new Promise((resolve) => {
         // Renders player 1 screen
         player1Screen.renderUI();
-
-        // Use attachCoordinateListeners and wait for both players to be ready
         this.activateBoardForSetup(player1, player1Screen, (p1) => {
           // After first player finished positioning ships
           // Renders second screen
@@ -32,6 +30,7 @@ function Game(player1, player2, container, gamemode) {
           } else if (gamemode === GAMEMODES.COMPUTER) {
             console.log(`Setting up Computer`);
             player2.setupBattleShips();
+            console.log(`${player2.name} ready`);
             player2Screen.renderUI();
           }
           resolve();
@@ -44,6 +43,7 @@ function Game(player1, player2, container, gamemode) {
       let coordinateList = board.querySelectorAll(".coordinate");
 
       coordinateList.forEach((coord) => {
+        playerScreen.renderPrompt("Setting up boards...");
         coord.addEventListener("click", () => {
           if (player.ships.length < 5) {
             let shipToAdd = Object.values(SHIPS)[player.ships.length];
@@ -72,27 +72,33 @@ function Game(player1, player2, container, gamemode) {
     attackPhase() {
       return new Promise((resolve) => {
         player1Screen.renderUI();
+        player1Screen.renderPrompt(`${player1.name} Turn`);
         this.activateBoardForAttacking(player1, player1Screen, (p1) => {
-          console.log(`${p1.name} attacked`);
-          player2Screen.renderUI();
+          player1Screen.renderUI();          
+          console.log(`Is ${player1.name} opponent defeated? ${player2.isDefeated}`);
           if (player2.isDefeated) {
-            console.log(`Game Over!`);
+            player1Screen.renderPrompt(`Game Over!`);
             resolve();
           } else {
             if (gamemode === GAMEMODES.HUMAN) {
               this.activateBoardForAttacking(player2, player2Screen, (p2) => {
-                console.log(`${p2.name} attacked`);
+                console.log(`${p2.name} attack finished`);
                 if (player1.isDefeated) {
+                  player1Screen.renderPrompt(`Game Over!`);
                   console.log(`Game Over!`);
                   resolve();
                 } else this.attackPhase();
               });
             } else if (gamemode === GAMEMODES.COMPUTER) {
-              player2.autoAttack();
-              if (player1.isDefeated) {
-                console.log(`Game Over!`);
-                resolve();
-              } else this.attackPhase();
+              player1Screen.renderPrompt(`Computer Turn`)
+              this.computerTimerAttack(player2, 1000, (p2) => {
+                console.log(`${p2.name} attack finished`);
+                if (player1.isDefeated) {
+                  player1Screen.renderPrompt(`Game Over!`);
+                  console.log(`Game Over!`);
+                  resolve();
+                } else this.attackPhase();
+              });
             }
           }
         });
@@ -105,9 +111,7 @@ function Game(player1, player2, container, gamemode) {
 
       coordinateList.forEach((coord) => {
         coord.addEventListener("click", () => {
-          console.log(typeof coord.dataset.x);
-
-          if (player.attack(coord.dataset.x, coord.dataset.y))
+          if (player.attack(coord.dataset.x, coord.dataset.y) !== false)
             onAttackSuccessful(player);
           else
             this.activateBoardForAttacking(
@@ -117,6 +121,12 @@ function Game(player1, player2, container, gamemode) {
             );
         });
       });
+    },
+    computerTimerAttack(player, time, onAttackSuccessful) {
+      window.setTimeout(() => {
+        if (player.autoAttack() !== false) onAttackSuccessful(player);
+        else this.computerTimerAttack(player, 0, onAttackSuccessful);
+      }, time);
     },
   };
 }

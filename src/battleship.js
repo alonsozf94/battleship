@@ -4,7 +4,7 @@ import { Coordinate } from "./coordinate";
 class Battleship {
   constructor(type, startPos, direction = DIRECTIONS.HORIZONTAL) {
     this._name = type.name;
-    this._startPos = new Coordinate(startPos.x, startPos.y);
+    this._startPos = new Coordinate(parseInt(startPos.x), parseInt(startPos.y));
     this._length = type.length;
     this._direction = direction;
     this._coordinates = [];
@@ -65,16 +65,23 @@ class Battleship {
     }    
   }
   getHit(x, y) {
+    
     this.coordinates.forEach((coord) => {
-      if (coord.x == x && coord.y == y) {
+      // // Here's the problem
+      // console.log(`Checking (${coord.x},${coord.y})`);
+      // console.log(`(${typeof coord.x},${typeof coord.y})`);
+      // console.log(`(${typeof x},${typeof y})`);
+            
+      if (coord.x === Number(x) && coord.y === Number(y)) {
         this.hitPoints = this.hitPoints - 1;
         coord.mark = MARKS.HIT;
-        if (this.hitPoints <= 0)
-          this.isSunk = true;
-        console.log(this);
+        if (this.hitPoints <= 0) this.isSunk = true;
         return true;
       } else return false;
     });
+  }
+  showHP() {
+    console.log(`${this.name}'s hit points are ${this.hitPoints}`);
   }
 }
 

@@ -1,5 +1,5 @@
 import { Battleship } from "./battleship";
-import { DIRECTIONS, SHIPS } from "./constants";
+import { DIRECTIONS, MARKS, SHIPS } from "./constants";
 import { Player } from "./player";
 
 class Computer extends Player {
@@ -36,31 +36,55 @@ class Computer extends Player {
     };
   }
   autoAttack() {
-    if (this.moveList.length == 0) {
-      console.log(`First ${this.name} attack`);
+    let result = false;
 
-      let attackCoordinate = {
-        x: this.randomizeData().x,
-        y: this.randomizeData().y,
-      };
-      let attackResult = super.attack(attackCoordinate.x, attackCoordinate.y);
-      attackCoordinate.result = attackResult;
-      this.moveList.push(attackCoordinate);
+    if (this.moveList.length == 0) {
+      result = this.randomAttack();
     } else {
-      console.log(`${this.name} attack`);
-      let attackCoordinate = {
-        x: this.randomizeData().x,
-        y: this.randomizeData().y,
-      };
-      let attackResult = super.attack(attackCoordinate.x, attackCoordinate.y);
-      attackCoordinate.result = attackResult;
-      this.moveList.push(attackCoordinate);
+      result = this.areaAttack();
     }
-    //  Now make the AI attack and do the thinking
+    return result;
   }
   showGame() {
     super.showGame();
     console.log(this.moveList);
+  }
+
+  // Attack Functions
+  randomAttack() {
+    let attackCoordinate = {
+      x: this.randomizeData().x,
+      y: this.randomizeData().y,
+    };
+    let attackResult = super.attack(attackCoordinate.x, attackCoordinate.y);
+    if (attackResult !== false) {
+      attackCoordinate.result = attackResult;
+      this.moveList.push(attackCoordinate);
+    }
+    return attackResult;
+  }
+  areaAttack() {
+    let attackResult = false;
+    let movesLength = this.moveList.length;
+    let lastAttack =
+      this.moveList.length > 0 ? this.moveList[movesLength - 1] : null;
+
+    // Code for later
+
+    if (lastAttack.result.mark === MARKS.HIT) {
+      let attackCoordinate = {
+        x: lastAttack.x - 1,
+        y: lastAttack.y,
+      };
+
+      attackResult = super.attack(attackCoordinate.x, attackCoordinate.y);
+      attackCoordinate.result = attackResult;
+      this.moveList.push(attackCoordinate);
+      return attackResult;
+    } else {
+      attackResult = this.randomAttack();
+      return attackResult;
+    }
   }
 }
 

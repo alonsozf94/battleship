@@ -41,7 +41,7 @@ class Gameboard {
         }
       } else if (ship.direction == DIRECTIONS.VERTICAL) {
         if (startX + (ship.length - 1) > 9) {
-          console.log(`Out of bounds! ${startX + ship.length}`);
+          // console.log(`Out of bounds! ${startX + ship.length}`);
           return false;
         } else if (
           this.verifyIfFree(
@@ -62,21 +62,12 @@ class Gameboard {
     return true;
   }
   receiveHit(x, y) {
-    let target = this._board[parseInt(x)][parseInt(y)];
-    if (target.mark === MARKS.FREE) {
-      // If hits open square
-      console.log("No ship! Marked!");
-      this._board[x][y].mark = MARKS.MARKED;
-    } else if (target.mark === MARKS.SHIP) {
-      // If it hits a ship
-      // Add hit logic here
-      console.log("Ship hit!");
-      this._board[x][y].mark = MARKS.HIT;
-      return this._board[x][y];
-    } else if (target.mark === MARKS.HIT || target.mark === MARKS.MARKED) {
-      // If hits square alredy hit
-      console.log("Already marked");
-      return false;
+    let target = this._board[parseInt(x)][parseInt(y)]
+    if (target.mark === MARKS.HIT || target.mark === MARKS.MARKED) return false;
+    else {
+      if (target.mark === MARKS.FREE) this._board[x][y].mark = MARKS.MARKED;
+      if (target.mark === MARKS.SHIP) this._board[x][y].mark = MARKS.HIT;
+      return this._board[x][y];      
     }
   }
   renderBoard() {

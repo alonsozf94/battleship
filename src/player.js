@@ -4,13 +4,7 @@ import { DIRECTIONS, MARKS } from "./constants";
 class Player {
   constructor(name, shipArray) {
     this._name = name;
-    console.log(`Setting ${name}'s board...`);
     this._board = new Gameboard();
-    // if (shipArray != null) {
-    //   this._ships = shipArray.forEach((ship) => {
-    //     this.addBattleship(ship);
-    //   });
-    // } else
     this._ships = [];
     this._isDefeated = false;
     this._opponent = undefined;
@@ -42,44 +36,48 @@ class Player {
   addBattleship(newShip) {
     this.ships.forEach((ship) => {
       if (ship.name === newShip.name) {
-        console.log(`${ship.name} already exists`);
+        // console.log(`${ship.name} already exists`);
         return false;
       }
     });
 
     if (this.board.placeBattleship(newShip)) {
-      console.log(`${newShip.name} placed`);
+      // console.log(`${newShip.name} placed`);
       this._ships.push(newShip);
     } else {
-      console.log(`Can't place ${newShip.name}`);
+      // console.log(`Can't place ${newShip.name}`);
       return false;
     }
   }
   attack(x, y) {
-    console.log(`====================================================`);
+    console.log(`==${this.name}'s Attack==`);
     console.log(
-      `Player ${this.name} is attacking player ${this.opponent.name} at position (${x},${y})`
+      `⚔️ ${this.name} attacked ${this.opponent.name} at (${x},${y})`
     );
-    if (this.opponent.board.receiveHit(x, y) != false) {
-      this.opponent.ships.forEach((ship) => {
-        ship.getHit(x, y);
-        this.checkStatus();
-      });
-      return true;
-    } else return false;
-  }
-  checkStatus() {
-    if (this.ships.every((ship) => ship.isSunk == true)) {
-      console.log(`${this.name} lost`);
-      this.isDefeated = true;
+    let shot = this.opponent.board.receiveHit(x, y);
+    if (shot == false) {
+      console.log(`Shot missed by ${this.name} at ${x},${y}`);
+      return shot;
     } else {
-      console.log(`${this.name} is on the game`);
+      if (shot.mark === MARKS.HIT) {
+        this.opponent.ships.forEach((ship) => {
+          let hitRes = ship.getHit(x, y);
+          this.opponent.updateStatus()
+          console.log(`Hit Result: ${hitRes}`);
+        });
+      }
+      return shot;
     }
   }
+  updateStatus() {
+    if (this.ships.every((ship) => ship.isSunk === true)) {
+      this.isDefeated = true
+    };
+  }
   showGame() {
-    console.log(`====================================================`);
+    console.log(`==-==`);
     console.log(`Player ${this.name}`);
-    console.log(`====================================================`);
+    console.log(`==-==`);
     this.ships.forEach((ship) => {
       console.log(
         `${this.name}'s ${ship.name} status is ${

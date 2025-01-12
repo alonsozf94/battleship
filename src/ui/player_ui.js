@@ -18,20 +18,44 @@ function playerUI(screen, player) {
             break;
         }
       } else if (player === PLAYERS.OPPONENT) {
-        if (mark == MARKS.HIT) return "💥"
+        if (mark == MARKS.HIT) return "💥";
+        if (mark == MARKS.MARKED) return "❌";
+        if (mark == MARKS.SHIP) return "⛵";
         else return "🌊"
       }
     },
-    renderShips() {
+    createPlayerContainer(user) {
+      let playerContainer = document.createElement("div");
+      playerContainer.classList.add('player-container');
+      playerContainer.innerHTML = `<div class='player-name'><h2>${user.name}</h2></div>`
+      return playerContainer;
+    },
+    renderHeader() {
+      let header = document.createElement('div');
+      header.innerHTML = `<h1 class='title'>Battleship</h1>`;
+      return header
+    },
+    renderShips(user) {
       let shipGroup = document.createElement("div");
+      shipGroup.classList.add('ship-list')
+      user.ships.forEach((ship) => {
+        let shipIcon = document.createElement("div");
+        shipIcon.innerHTML = ship.isSunk ? `💀` : `🚢`;
+        shipIcon.classList.add("ship-icon")
+        shipGroup.appendChild(shipIcon); 
+      })
       return shipGroup;
     },
     renderPlayerBoard() {
       // Creating container tags
+      let playerContainer = this.createPlayerContainer(player);
+      let boardContainer = document.createElement("div");
+      let playerShips = this.renderShips(player);
       let playerUIBoard = document.createElement("div");
       let playerGrid = player.board.board;
 
-      playerUIBoard.classList.add("board");
+      boardContainer.classList.add("board-container")
+      playerUIBoard.classList.add("board"); 
       playerUIBoard.classList.add("player-board");
 
       // Creating grid
@@ -51,13 +75,20 @@ function playerUI(screen, player) {
         playerUIBoard.appendChild(gridRow);
       });
 
-      return playerUIBoard;
+      boardContainer.appendChild(playerShips);
+      boardContainer.appendChild(playerUIBoard);
+      playerContainer.appendChild(boardContainer);
+      return playerContainer;
     },
     renderOpponentBoard() {
       // Creating container tags
+      let playerContainer = this.createPlayerContainer(player.opponent)
+      let boardContainer = document.createElement("div");
+      let opponentShips = this.renderShips(player.opponent)
       let opponentUIBoard = document.createElement("div");
       let opponentGrid = player.opponent.board.board;
 
+      boardContainer.classList.add("board-container")
       opponentUIBoard.classList.add("board");
       opponentUIBoard.classList.add("opponent-board");
 
@@ -71,31 +102,54 @@ function playerUI(screen, player) {
           gridCoordinate.setAttribute("data-x", `${coord.x}`);
           gridCoordinate.setAttribute("data-y", `${coord.y}`);
 
-          gridCoordinate.innerHTML = this.cellEmoji(coord.mark/*, PLAYERS.OPPONENT*/);
+          gridCoordinate.innerHTML = this.cellEmoji(coord.mark, PLAYERS.OPPONENT);
           gridRow.appendChild(gridCoordinate);
         });
         opponentUIBoard.appendChild(gridRow);
       });
 
-      return opponentUIBoard;
+      boardContainer.appendChild(opponentShips);
+      boardContainer.appendChild(opponentUIBoard);
+      playerContainer.appendChild(boardContainer);
+      return playerContainer;
+    },
+    renderPrompt(message){
+      let prompt = document.querySelector('.prompt');
+      if (prompt === null) {
+        prompt = document.createElement('div');
+        prompt.classList.add('prompt')
+        screen.appendChild(prompt)
+      }
+      prompt.innerHTML = "";
+      prompt.innerHTML = `${message}`;
     },
     renderUI() {
       screen.innerHTML = "";
 
+      let testBtn = document.createElement('button');
+
       let playerUI = document.createElement("div");
-      let boardsContainer = document.createElement("div");
-      let playerShips = this.renderShips();
+      let header = this.renderHeader();
+      let gameContainer = document.createElement("div");
       let playerBoard = this.renderPlayerBoard();
       let oppBoard = this.renderOpponentBoard();
 
       playerUI.classList.add("player-ui");
-      boardsContainer.classList.add("boards-container");
+      gameContainer.classList.add("game-container");
 
-      playerUI.appendChild(playerShips);
-      boardsContainer.appendChild(playerBoard);
-      boardsContainer.appendChild(oppBoard);
-      playerUI.appendChild(boardsContainer);
+      gameContainer.appendChild(playerBoard);
+      gameContainer.appendChild(oppBoard);
+      screen.appendChild(header);
+      playerUI.appendChild(gameContainer);
       screen.appendChild(playerUI);
+      screen.appendChild(testBtn);
+
+
+      testBtn.addEventListener('click', () => {
+        player.showGame();
+        player.opponent.showGame();
+        
+      })
     },
   };
 }
